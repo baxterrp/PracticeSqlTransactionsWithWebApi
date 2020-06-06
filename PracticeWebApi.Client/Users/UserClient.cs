@@ -18,7 +18,7 @@ namespace PracticeWebApi.Client.Users
 
         public async Task<User> FindUserById(string id)
         {
-            var getRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{id}");
+            var getRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/user/{id}");
 
             using (var client = new HttpClient())
             {
@@ -46,7 +46,7 @@ namespace PracticeWebApi.Client.Users
 
         public async Task RegisterNewUser(User user)
         {
-            var postRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}");
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/user");
             var stringRequest = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
             postRequest.Content = stringRequest;
 

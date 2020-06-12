@@ -9,7 +9,8 @@ namespace PracticeWebApi.Data.Products
 {
     public class ProductRepository : IProductRepository
     {
-        private string _connectionString = "Data Source = Silver; Initial Catalog = PracticeCommerce; Integrated Security = True;";
+        private readonly DatabaseConfiguration _databaseConfiguration;
+
         private readonly string _updateActivationStatus = 
             @"UPDATE Products Set [IsActive] = @IsActive WHERE [Id] = @Id";
         private readonly string _insertNewProduct =
@@ -23,9 +24,14 @@ namespace PracticeWebApi.Data.Products
             @"price = @Price," +
             @"groupId = @GroupId WHERE [Id] = @Id";
 
+        public ProductRepository(DatabaseConfiguration databaseConfiguration)
+        {
+            _databaseConfiguration = databaseConfiguration;
+        }
+
         public async Task ActivateProduct(string productId)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_databaseConfiguration.ConnectionString))
             {
                 await connection.ExecuteAsync(_updateActivationStatus, new { Id = productId, IsActive = 1 });
             }
@@ -33,7 +39,7 @@ namespace PracticeWebApi.Data.Products
 
         public async Task DeactiveProduct(string productId)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_databaseConfiguration.ConnectionString))
             {
                 await connection.ExecuteAsync(_updateActivationStatus, new { Id = productId, IsActive = 0 });
             }
@@ -41,7 +47,7 @@ namespace PracticeWebApi.Data.Products
 
         public async Task<ProductDataEntity> AddProduct(ProductDataEntity product)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_databaseConfiguration.ConnectionString))
             {
                 await connection.ExecuteAsync(_insertNewProduct, product);
 
@@ -51,7 +57,7 @@ namespace PracticeWebApi.Data.Products
 
         public async Task<ProductDataEntity> FindProductById(string productId)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_databaseConfiguration.ConnectionString))
             {
                 var result = await connection.QueryAsync<ProductDataEntity>(_findProductById, new { Id = productId });
 
@@ -64,7 +70,7 @@ namespace PracticeWebApi.Data.Products
 
         public async Task<IList<ProductDataEntity>> GetProductsByGroupId(string groupId)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_databaseConfiguration.ConnectionString))
             {
                 var results = await connection.QueryAsync<ProductDataEntity>(_findProductByGroupId, new { GroupId = groupId });
 
@@ -74,7 +80,7 @@ namespace PracticeWebApi.Data.Products
 
         public async Task UpdateProduct(ProductDataEntity product)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_databaseConfiguration.ConnectionString))
             {
                 await connection.ExecuteAsync(_updateProduct, product);
             }

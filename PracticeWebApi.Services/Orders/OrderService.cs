@@ -39,7 +39,7 @@ namespace PracticeWebApi.Services.Orders
 
             // generate guid id
             order.Id = Guid.NewGuid().ToString();
-            order.Status = "Started";
+            order.Status = OrderStatus.Started;
 
             // because we're just mapping this to data entity, we don't need a full user yet
             order.User = new User { Id = request.UserId };

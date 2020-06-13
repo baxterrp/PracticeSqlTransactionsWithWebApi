@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PracticeWebApi.CommonClasses.Orders;
 using PracticeWebApi.Services;
 using PracticeWebApi.Services.Orders;
 using System;
@@ -15,6 +14,24 @@ namespace PracticeWebApi.Web.Controllers
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
+        }
+
+        [HttpDelete("/orders/{orderId}")]
+        public async Task<IActionResult> CancelOrder([FromRoute]string orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPut("/orders/{productId}")]
+        public async Task<IActionResult> AddProductToOrder([FromRoute] string productId) 
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost("/orders/{orderId}")]
+        public async Task<IActionResult> CompleteOrder([FromRoute]string orderId)
+        {
+            throw new NotImplementedException();
         }
 
         [HttpPost("/orders")]

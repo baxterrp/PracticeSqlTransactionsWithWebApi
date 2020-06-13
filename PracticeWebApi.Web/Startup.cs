@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PracticeWebApi.CommonClasses.Orders;
 using PracticeWebApi.CommonClasses.Products;
 using PracticeWebApi.CommonClasses.Users;
 using PracticeWebApi.Data;
+using PracticeWebApi.Data.Orders;
 using PracticeWebApi.Data.Products;
 using PracticeWebApi.Data.Users;
 using PracticeWebApi.Services;
+using PracticeWebApi.Services.Orders;
 using PracticeWebApi.Services.Products;
 using PracticeWebApi.Services.Users;
 
@@ -26,21 +30,30 @@ namespace PracticeWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // config
             var databaseConfiguration = new DatabaseConfiguration();
             Configuration.GetSection("DatabaseConfiguration").Bind(databaseConfiguration);
             services.AddSingleton(databaseConfiguration);
 
+            // users
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IProductGroupService, ProductGroupService>();
-            services.AddSingleton<IProductService, ProductService>();
-
-            // change repo here
-            services.AddSingleton<IProductGroupRepository, ProductGroupRepository>();
-            services.AddSingleton<IUserRepository, UserRepository>();
-            services.AddSingleton<IProductRepository, ProductRepository>();
+            services.AddSingleton<IUserRepository, FakeUserRepository>();
             services.AddSingleton<IMapper<User, UserDataEntity>, UserMapper>();
+
+            // product groups
+            services.AddSingleton<IProductGroupService, ProductGroupService>();
+            services.AddSingleton<IProductGroupRepository, FakeProductGroupRepository>();
             services.AddSingleton<IMapper<ProductGroup, ProductGroupDataEntity>, ProductGroupMapper>();
+
+            // products
+            services.AddSingleton<IProductService, ProductService>();
+            services.AddSingleton<IProductRepository, FakeProductRepository>();
             services.AddSingleton<IMapper<Product, ProductDataEntity>, ProductMapper>();
+
+            // orders
+            services.AddSingleton<IOrderService, OrderService>();
+            services.AddSingleton<IOrderRepository, FakeOrderRepository>();
+            services.AddSingleton<IMapper<Order, OrderDataEntity>, OrderMapper>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

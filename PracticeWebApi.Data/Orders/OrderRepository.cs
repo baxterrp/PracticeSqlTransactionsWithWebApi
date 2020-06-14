@@ -15,12 +15,22 @@ namespace PracticeWebApi.Data.Orders
             throw new System.NotImplementedException();
         }
 
-        public Task<OrderDataEntity> FindOrderByUserId(string userId)
+        public Task<OrderDataEntity> FindOrderById(string orderId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<IList<OrderDataEntity>> FindOrdersByUserId(string userId)
         {
             throw new System.NotImplementedException();
         }
 
         public Task<IList<OrderedProductDataEntity>> GetOrderedProductsByOrderId(string orderId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task UpdateOrder(OrderDataEntity orderDataEntity)
         {
             throw new System.NotImplementedException();
         }

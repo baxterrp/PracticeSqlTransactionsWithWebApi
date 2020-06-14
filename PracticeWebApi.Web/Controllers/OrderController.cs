@@ -19,19 +19,25 @@ namespace PracticeWebApi.Web.Controllers
         [HttpDelete("/orders/{orderId}")]
         public async Task<IActionResult> CancelOrder([FromRoute]string orderId)
         {
-            throw new NotImplementedException();
+            await _orderService.CancelOrder(orderId);
+
+            return Ok();
         }
 
-        [HttpPut("/orders/{productId}")]
-        public async Task<IActionResult> AddProductToOrder([FromRoute] string productId) 
+        [HttpPut("/orders/{orderId}/{productId}")]
+        public async Task<IActionResult> AddProductToOrder([FromRoute]string orderId, [FromRoute] string productId) 
         {
-            throw new NotImplementedException();
+            await _orderService.AddProductToOrder(orderId, productId);
+
+            return Ok();
         }
 
         [HttpPost("/orders/{orderId}")]
         public async Task<IActionResult> CompleteOrder([FromRoute]string orderId)
         {
-            throw new NotImplementedException();
+            await _orderService.CompleteOrder(orderId);
+
+            return Ok();
         }
 
         [HttpPost("/orders")]
@@ -50,13 +56,13 @@ namespace PracticeWebApi.Web.Controllers
         }
 
         [HttpGet("/orders/{userId}")]
-        public async Task<IActionResult> FindOrderByUserId([FromRoute] string userId) 
+        public async Task<IActionResult> FindOrdersByUserId([FromRoute] string userId) 
         {
             try
             {
-                var order = await _orderService.FindOrderByUserId(userId);
+                var orders = await _orderService.FindOrdersByUserId(userId);
 
-                return Ok(order);
+                return Ok(orders);
             }
             catch (Exception exception)
             {

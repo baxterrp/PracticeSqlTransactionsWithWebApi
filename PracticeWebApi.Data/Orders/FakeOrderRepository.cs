@@ -23,15 +23,31 @@ namespace PracticeWebApi.Data.Orders
             return Task.CompletedTask;
         }
 
-        public Task<OrderDataEntity> FindOrderByUserId(string userId)
+        public Task<OrderDataEntity> FindOrderById(string orderId)
         {
-            return Task.FromResult(_orders.Where(order => order.UserId == userId).FirstOrDefault());
+            OrderDataEntity order = _orders.Where(o => o.Id == orderId).First();
+            return Task.FromResult(order);
+        }
+
+        public Task<IList<OrderDataEntity>> FindOrdersByUserId(string userId)
+        {
+            IList<OrderDataEntity> orders = _orders.Where(order => order.UserId == userId).ToList();
+            return Task.FromResult(orders);
         }
 
         public Task<IList<OrderedProductDataEntity>> GetOrderedProductsByOrderId(string orderId)
         {
             IList<OrderedProductDataEntity> orderedProducts = _addedProducts.Where(ap => ap.OrderId == orderId).ToList();
             return Task.FromResult(orderedProducts);
+        }
+
+        public Task UpdateOrder(OrderDataEntity orderDataEntity)
+        {
+            _orders = _orders.Where(order => order.Id != orderDataEntity.Id).ToList();
+
+            _orders.Add(orderDataEntity);
+
+            return Task.CompletedTask;
         }
     }
 }

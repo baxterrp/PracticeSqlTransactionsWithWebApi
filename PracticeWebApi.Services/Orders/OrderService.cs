@@ -6,7 +6,7 @@ using PracticeWebApi.Data.Orders;
 using PracticeWebApi.Data.Products;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PracticeWebApi.Services.Orders
@@ -70,10 +70,10 @@ namespace PracticeWebApi.Services.Orders
             return order;
         }
 
-        public async Task<Order> FindOrderByUserId(string id)
+        public async Task<Order> FindOrderById(string orderId)
         {
             // find order in db and map to base order
-            var orderDataEntity = await _orderRepository.FindOrderByUserId(id);
+            var orderDataEntity = await _orderRepository.FindOrderById(orderId);
             var order = _orderMapper.MapToBase(orderDataEntity);
 
             // find user by userid and add to order
@@ -83,6 +83,50 @@ namespace PracticeWebApi.Services.Orders
             await ApplyProductsToOrder(order);
 
             return order;
+        }
+
+        public async Task AddProductToOrder(string orderId, string productId)
+        {
+            var orderedProduct = new OrderedProductDataEntity
+            {
+                OrderId = orderId,
+                ProductId = productId
+            };
+
+            await _orderRepository.AddProductToOrder(orderedProduct);
+        }
+
+        public async Task CancelOrder(string orderId)
+        {
+            var order = await _orderRepository.FindOrderById(orderId);
+            order.Status = OrderStatus.Aborted;
+
+            await _orderRepository.UpdateOrder(order);
+        }
+
+        public async Task CompleteOrder(string orderId)
+        {
+            var order = await _orderRepository.FindOrderById(orderId);
+            order.Status = OrderStatus.Completed;
+            // should probably do somethign else like store a record for completed orders and cost for invoice... idk yet
+            await _orderRepository.UpdateOrder(order);
+        }
+
+        public async Task<IList<Order>> FindOrdersByUserId(string userId)
+        {
+            var orderDataEntities = await _orderRepository.FindOrdersByUserId(userId);
+            IList<Order> orders = new List<Order>();
+
+            foreach(var order in orderDataEntities)
+            {
+                var mappedOrder = _orderMapper.MapToBase(order);
+                await ApplyProductsToOrder(mappedOrder);
+                await ApplyUserToOrder(mappedOrder, order.UserId);
+
+                orders.Add(mappedOrder);
+            }
+
+            return orders.ToList();
         }
 
         private async Task ApplyUserToOrder(Order order, string userId)

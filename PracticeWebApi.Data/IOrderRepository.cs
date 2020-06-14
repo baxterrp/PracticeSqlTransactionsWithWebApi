@@ -7,8 +7,10 @@ namespace PracticeWebApi.Data
     public interface IOrderRepository
     {
         Task CreateOrder(OrderDataEntity order);
-        Task<OrderDataEntity> FindOrderByUserId(string userId);
+        Task<OrderDataEntity> FindOrderById(string orderId);
+        Task<IList<OrderDataEntity>> FindOrdersByUserId(string userId);
         Task AddProductToOrder(OrderedProductDataEntity orderedProductDataEntity);
         Task<IList<OrderedProductDataEntity>> GetOrderedProductsByOrderId(string orderId);
+        Task UpdateOrder(OrderDataEntity orderDataEntity);
     }
 }

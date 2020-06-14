@@ -35,24 +35,38 @@ namespace PracticeWebApi
             Configuration.GetSection("DatabaseConfiguration").Bind(databaseConfiguration);
             services.AddSingleton(databaseConfiguration);
 
+            // repositories - adding flag for using InMemory or not
+            switch (databaseConfiguration.RepositoryType)
+            {
+                case "InMemory": 
+                    services.AddSingleton<IUserRepository, FakeUserRepository>();
+                    services.AddSingleton<IProductGroupRepository, FakeProductGroupRepository>();
+                    services.AddSingleton<IProductRepository, FakeProductRepository>();
+                    services.AddSingleton<IOrderRepository, FakeOrderRepository>();
+                    break;
+                default:
+                    services.AddSingleton<IUserRepository, UserRepository>();
+                    services.AddSingleton<IProductGroupRepository, ProductGroupRepository>();
+                    services.AddSingleton<IProductRepository, ProductRepository>();
+                    services.AddSingleton<IOrderRepository, OrderRepository>();
+                    break;
+            }
+            
+
             // users
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IUserRepository, FakeUserRepository>();
             services.AddSingleton<IMapper<User, UserDataEntity>, UserMapper>();
 
             // product groups
             services.AddSingleton<IProductGroupService, ProductGroupService>();
-            services.AddSingleton<IProductGroupRepository, FakeProductGroupRepository>();
             services.AddSingleton<IMapper<ProductGroup, ProductGroupDataEntity>, ProductGroupMapper>();
 
             // products
             services.AddSingleton<IProductService, ProductService>();
-            services.AddSingleton<IProductRepository, FakeProductRepository>();
             services.AddSingleton<IMapper<Product, ProductDataEntity>, ProductMapper>();
 
             // orders
             services.AddSingleton<IOrderService, OrderService>();
-            services.AddSingleton<IOrderRepository, FakeOrderRepository>();
             services.AddSingleton<IMapper<Order, OrderDataEntity>, OrderMapper>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

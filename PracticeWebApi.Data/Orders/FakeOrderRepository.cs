@@ -25,7 +25,7 @@ namespace PracticeWebApi.Data.Orders
 
         public Task<OrderDataEntity> FindOrderById(string orderId)
         {
-            OrderDataEntity order = _orders.Where(o => o.Id == orderId).First();
+            OrderDataEntity order = _orders.First(o => o.Id == orderId);
             return Task.FromResult(order);
         }
 

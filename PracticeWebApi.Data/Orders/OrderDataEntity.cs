@@ -7,6 +7,5 @@
         // started, completed, canceled
         public string Status { get; set; }
         public string UserId { get; set; }
-        public string Products { get; set; }
     }
 }

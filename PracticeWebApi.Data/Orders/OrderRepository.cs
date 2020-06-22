@@ -30,6 +30,11 @@ namespace PracticeWebApi.Data.Orders
             throw new System.NotImplementedException();
         }
 
+        public Task UpdateExistingOrderedProduct(OrderedProductDataEntity orderedProductDataEntity)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task UpdateOrder(OrderDataEntity orderDataEntity)
         {
             throw new System.NotImplementedException();

@@ -1,14 +1,11 @@
-﻿using PracticeWebApi.CommonClasses.Products;
-using PracticeWebApi.CommonClasses.Users;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using PracticeWebApi.CommonClasses.Users;
 
 namespace PracticeWebApi.CommonClasses.Orders
 {
     public class Order : BaseResource
     {
         public string Status { get; set; }
+        public Cart Cart { get; set; }
         public User User { get; set; }
-        public IList<Product> Products { get; set; }
     }
 }

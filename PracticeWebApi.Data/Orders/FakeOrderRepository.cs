@@ -37,8 +37,17 @@ namespace PracticeWebApi.Data.Orders
 
         public Task<IList<OrderedProductDataEntity>> GetOrderedProductsByOrderId(string orderId)
         {
-            IList<OrderedProductDataEntity> orderedProducts = _addedProducts.Where(ap => ap.OrderId == orderId).ToList();
+            IList<OrderedProductDataEntity> orderedProducts = _addedProducts.Where(ap => ap.OrderId == orderId && ap.Quantity > 0).ToList();
             return Task.FromResult(orderedProducts);
+        }
+
+        public Task UpdateExistingOrderedProduct(OrderedProductDataEntity orderedProductDataEntity)
+        {
+            var productToUpdate = _addedProducts.First(ap => ap.ProductId != orderedProductDataEntity.ProductId);
+
+            productToUpdate.Quantity = orderedProductDataEntity.Quantity;
+
+            return Task.CompletedTask;
         }
 
         public Task UpdateOrder(OrderDataEntity orderDataEntity)

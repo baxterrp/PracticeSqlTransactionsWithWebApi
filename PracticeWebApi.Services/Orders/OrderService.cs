@@ -47,13 +47,14 @@ namespace PracticeWebApi.Services.Orders
             // map to data entity for storage - will only map id, userid, and status
             var orderDataEntity = _orderMapper.MapToDataEntity(order);
 
-            foreach(var productId in request.ProductIds)
+            foreach(var productRequest in request.ProductIds)
             {
                 // create 'ordered product' object which represents each product on an order by id and order id
                 var orderedProduct = new OrderedProductDataEntity
                 {
                     OrderId = order.Id,
-                    ProductId = productId
+                    ProductId = productRequest.Key,
+                    Quantity = productRequest.Value
                 };
 
                 // add each ordered product to the db 
@@ -85,15 +86,28 @@ namespace PracticeWebApi.Services.Orders
             return order;
         }
 
-        public async Task AddProductToOrder(string orderId, string productId)
+        public async Task AddProductToOrder(string orderId, string productId, int quantity)
         {
-            var orderedProduct = new OrderedProductDataEntity
-            {
-                OrderId = orderId,
-                ProductId = productId
-            };
+            var orderedProducts = await _orderRepository.GetOrderedProductsByOrderId(orderId);
+            var selectedOrderProduct = orderedProducts.FirstOrDefault(op => op.ProductId == productId);
 
-            await _orderRepository.AddProductToOrder(orderedProduct);
+            if(selectedOrderProduct is null)
+            {
+                var orderedProduct = new OrderedProductDataEntity
+                {
+                    OrderId = orderId,
+                    ProductId = productId,
+                    Quantity = quantity
+                };
+                
+                await _orderRepository.AddProductToOrder(orderedProduct);
+            }
+            else
+            {
+                selectedOrderProduct.Quantity = quantity;
+
+                await _orderRepository.UpdateExistingOrderedProduct(selectedOrderProduct);
+            }
         }
 
         public async Task CancelOrder(string orderId)
@@ -142,16 +156,15 @@ namespace PracticeWebApi.Services.Orders
         {
             // get all of the ordered products by order id
             var orderedProducts = await _orderRepository.GetOrderedProductsByOrderId(order.Id);
-            var products = new List<Product>();
+            order.Cart = new Cart();
 
             // find each product based on orderedProduct's product id
             foreach(var orderedProduct in orderedProducts)
             {
-                products.Add(await _productService.FindProductById(orderedProduct.ProductId));
-            }
+                var product = await _productService.FindProductById(orderedProduct.ProductId);
 
-            // add them to the order
-            order.Products = products;
+                order.Cart.UpdateCart(product, orderedProduct.Quantity);
+            }
         }
     }
 }

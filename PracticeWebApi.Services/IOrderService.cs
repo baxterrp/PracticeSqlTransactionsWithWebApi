@@ -10,7 +10,7 @@ namespace PracticeWebApi.Services
         Task<Order> CreateOrder(CreateOrderRequest request);
         Task<IList<Order>> FindOrdersByUserId(string id);
         Task<Order> FindOrderById(string id);
-        Task AddProductToOrder(string orderId, string productId);
+        Task AddProductToOrder(string orderId, string productId, int quantity);
         Task CancelOrder(string userId);
         Task CompleteOrder(string userId);
     }

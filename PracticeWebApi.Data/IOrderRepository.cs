@@ -10,6 +10,7 @@ namespace PracticeWebApi.Data
         Task<OrderDataEntity> FindOrderById(string orderId);
         Task<IList<OrderDataEntity>> FindOrdersByUserId(string userId);
         Task AddProductToOrder(OrderedProductDataEntity orderedProductDataEntity);
+        Task UpdateExistingOrderedProduct(OrderedProductDataEntity orderedProductDataEntity);
         Task<IList<OrderedProductDataEntity>> GetOrderedProductsByOrderId(string orderId);
         Task UpdateOrder(OrderDataEntity orderDataEntity);
     }

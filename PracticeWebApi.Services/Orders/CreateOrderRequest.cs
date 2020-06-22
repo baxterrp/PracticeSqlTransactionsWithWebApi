@@ -6,6 +6,7 @@ namespace PracticeWebApi.Services.Orders
     public class CreateOrderRequest
     {
         public string UserId { get; set; }
-        public IEnumerable<string> ProductIds { get; set; }
+        // productId, count
+        public Dictionary<string, int> ProductIds { get; set; }
     }
 }

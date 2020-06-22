@@ -25,9 +25,9 @@ namespace PracticeWebApi.Web.Controllers
         }
 
         [HttpPut("/orders/{orderId}/{productId}")]
-        public async Task<IActionResult> AddProductToOrder([FromRoute]string orderId, [FromRoute] string productId) 
+        public async Task<IActionResult> AddProductToOrder([FromRoute]string orderId, [FromRoute] string productId, [FromQuery]int quantity = 1) 
         {
-            await _orderService.AddProductToOrder(orderId, productId);
+            await _orderService.AddProductToOrder(orderId, productId, quantity);
 
             return Ok();
         }
